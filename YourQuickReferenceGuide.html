@@ -1,0 +1,3447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniReader: The Complete Nutrition Chronicles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6a0dad;
+            --secondary: #9d4edd;
+            --accent: #ff6b8b;
+            --success: #4cc9f0;
+            --warning: #ffd166;
+            --light: #f8f4ff;
+            --dark: #1a1a2e;
+            --text: #333333;
+            --narrator: #5a189a;
+            --story-bg: #f0e6ff;
+            --chapter: #7b2cbf;
+            --ancient: #c77dff;
+            --magic: #e0aaff;
+            --dragon: #ff6b35;
+            --infinity: #3a86ff;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark), #16213e);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(106, 13, 173, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(76, 201, 240, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .game-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Story Header */
+        .story-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(106, 13, 173, 0.5);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            border: 4px solid var(--accent);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 15px 35px rgba(106, 13, 173, 0.5); }
+            to { box-shadow: 0 15px 45px rgba(106, 13, 173, 0.8), 0 0 30px rgba(255, 107, 139, 0.4); }
+        }
+
+        .story-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+
+        .story-title {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+            font-weight: 800;
+            background: linear-gradient(90deg, #ff6b8b, #4cc9f0, #ffd166);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: titleGlow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 10px rgba(255,107,139,0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(76,201,240,0.7)); }
+        }
+
+        .story-subtitle {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            max-width: 900px;
+            margin: 0 auto 30px;
+            font-style: italic;
+        }
+
+        .player-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(255,255,255,0.15);
+            padding: 20px 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            text-align: center;
+            min-width: 180px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px rgba(255,107,139,0.3);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--warning);
+            text-shadow: 0 0 15px rgba(255,209,102,0.7);
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Story Navigation */
+        .story-nav {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .chapter-btn {
+            background: linear-gradient(135deg, var(--chapter), var(--primary));
+            border: none;
+            padding: 20px 35px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 25px rgba(106, 13, 173, 0.5);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            min-width: 280px;
+        }
+
+        .chapter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .chapter-btn:hover::before {
+            left: 100%;
+        }
+
+        .chapter-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(106, 13, 173, 0.7);
+        }
+
+        .chapter-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--warning));
+            color: var(--dark);
+            animation: activePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes activePulse {
+            0%, 100% { transform: translateY(-5px) scale(1.05); }
+            50% { transform: translateY(-5px) scale(1.08); }
+        }
+
+        .chapter-btn.locked {
+            background: #444;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .chapter-btn i {
+            font-size: 1.5rem;
+        }
+
+        /* Story Content */
+        .story-content {
+            background: var(--story-bg);
+            border-radius: 25px;
+            padding: 50px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            border: 4px solid var(--secondary);
+            color: var(--dark);
+            position: relative;
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        .story-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--success));
+        }
+
+        .story-section {
+            display: none;
+            animation: fadeIn 1s ease;
+        }
+
+        .story-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .narrator-box {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border-left: 8px solid var(--narrator);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.4s ease;
+        }
+
+        .narrator-box:hover {
+            transform: translateY(-5px) rotateX(5deg);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .narrator-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            font-style: italic;
+            color: var(--narrator);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .narrator-identity {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .narrator-identity::before {
+            content: '';
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        /* Chapter Content */
+        .chapter-title {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: var(--primary);
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 4px solid var(--accent);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .objective-box {
+            background: linear-gradient(135deg, var(--success), #3a86ff);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(76, 201, 240, 0.5);
+            border: 3px solid rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .objective-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: objectiveShine 3s infinite;
+        }
+
+        @keyframes objectiveShine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .objective-title {
+            font-size: 1.7rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .quest-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: all 0.4s ease;
+            border: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quest-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .quest-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            border-color: var(--accent);
+        }
+
+        .quest-card.completed {
+            border-color: var(--success);
+            background: rgba(76, 201, 240, 0.05);
+        }
+
+        .quest-card.completed::after {
+            content: '✓ COMPLETED';
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: var(--success);
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .quest-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .quest-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .quest-desc {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .quest-reward {
+            display: inline-block;
+            background: var(--warning);
+            color: var(--dark);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255,209,102,0.4);
+        }
+
+        .quest-progress {
+            height: 12px;
+            background: #eee;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .quest-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), #3a86ff);
+            border-radius: 6px;
+            transition: width 0.7s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quest-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: progressShine 2s infinite;
+        }
+
+        @keyframes progressShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .quest-action {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quest-action:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(106, 13, 173, 0.4);
+        }
+
+        .quest-action.completed {
+            background: var(--success);
+        }
+
+        /* Enhanced Rewards Shop */
+        .rewards-shop {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .reward-item {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 3px solid var(--secondary);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .reward-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .reward-item:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            border-color: var(--accent);
+        }
+
+        .reward-item.purchased {
+            border-color: var(--success);
+            background: rgba(76, 201, 240, 0.1);
+        }
+
+        .reward-item.purchased::after {
+            content: 'OWNED';
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: var(--success);
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .reward-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+
+        .reward-title {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .reward-desc {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            min-height: 80px;
+        }
+
+        .reward-effect {
+            font-size: 1rem;
+            color: var(--success);
+            margin-bottom: 20px;
+            font-weight: bold;
+            padding: 10px;
+            background: rgba(76, 201, 240, 0.1);
+            border-radius: 10px;
+        }
+
+        .reward-price {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), #ff8fa3);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 6px 20px rgba(255,107,139,0.4);
+        }
+
+        .reward-item.purchased .reward-price {
+            background: var(--success);
+        }
+
+        /* Story Progression */
+        .story-progression {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 3px solid var(--secondary);
+        }
+
+        .progression-bar {
+            height: 25px;
+            background: #eee;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 25px 0;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .progression-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--success));
+            border-radius: 12px;
+            transition: width 1.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progression-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        .progression-text {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+
+        /* Enhanced Notifications */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 450px;
+        }
+
+        .notification {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transform: translateX(600px);
+            opacity: 0;
+            transition: all 0.6s ease;
+            border-left: 8px solid var(--success);
+            color: var(--dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification.warning {
+            border-left-color: var(--warning);
+        }
+
+        .notification.info {
+            border-left-color: var(--primary);
+        }
+
+        .notification.reward {
+            border-left-color: var(--accent);
+        }
+
+        .notification.story {
+            border-left-color: var(--narrator);
+        }
+
+        .notification-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+
+        .notification.success .notification-icon {
+            color: var(--success);
+        }
+
+        .notification.warning .notification-icon {
+            color: var(--warning);
+        }
+
+        .notification.info .notification-icon {
+            color: var(--primary);
+        }
+
+        .notification.reward .notification-icon {
+            color: var(--accent);
+        }
+
+        .notification.story .notification-icon {
+            color: var(--narrator);
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+
+        .notification-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #999;
+            padding: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .notification-close:hover {
+            color: var(--accent);
+            transform: scale(1.2);
+        }
+
+        /* Ancient Manuscript Effect */
+        .ancient-manuscript {
+            background: #f5e6ca;
+            border: 15px solid #d4b483;
+            border-radius: 5px;
+            padding: 40px;
+            margin: 40px 0;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            font-family: 'Times New Roman', serif;
+            color: #5c3713;
+        }
+
+        .ancient-manuscript::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.1"><rect width="100" height="100" fill="none" stroke="%235c3713" stroke-width="2"/></svg>');
+            pointer-events: none;
+        }
+
+        .manuscript-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #8b4513;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        .manuscript-content {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.8;
+            animation: float 10s ease-in-out infinite;
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-40px) rotate(5deg) scale(1.1); }
+            50% { transform: translateY(-20px) rotate(-5deg) scale(0.9); }
+            75% { transform: translateY(-30px) rotate(3deg) scale(1.05); }
+        }
+
+        /* Ancient Runes */
+        .ancient-rune {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.1;
+            color: var(--ancient);
+            z-index: -1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .story-title {
+                font-size: 3rem;
+            }
+            
+            .quest-grid, .rewards-shop {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .story-title {
+                font-size: 2.5rem;
+            }
+            
+            .player-stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .stat {
+                min-width: 250px;
+            }
+            
+            .chapter-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .quest-grid, .rewards-shop {
+                grid-template-columns: 1fr;
+            }
+            
+            .story-content {
+                padding: 30px;
+            }
+            
+            .notification-container {
+                max-width: calc(100% - 40px);
+            }
+        }
+
+        /* Achievement Badges */
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(76, 201, 240, 0.15);
+            border: 3px solid var(--success);
+            border-radius: 25px;
+            padding: 12px 20px;
+            margin: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--success);
+            animation: bounce 0.6s ease;
+            box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Story Choices */
+        .story-choices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .story-choice {
+            background: white;
+            border: 3px solid var(--secondary);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-choice::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .story-choice:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: var(--accent);
+        }
+
+        .story-choice i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .story-choice-title {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .story-choice-desc {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Magic Effects */
+        .magic-sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--magic);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: sparkle 2s ease-out;
+        }
+
+        @keyframes sparkle {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1) rotate(180deg); opacity: 0; }
+        }
+
+        /* Ancient Knowledge Scroll */
+        .knowledge-scroll {
+            background: #f5e6ca;
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-family: 'Times New Roman', serif;
+        }
+
+        .scroll-header {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #5c3713;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .scroll-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #5c3713;
+        }
+
+        /* Meal Planning Interface */
+        .meal-planning {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .food-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .category-btn {
+            background: var(--light);
+            border: 2px solid var(--secondary);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .category-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .category-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .food-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .food-option {
+            background: white;
+            border: 2px solid var(--secondary);
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: grab;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .food-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .food-emoji {
+            font-size: 2rem;
+        }
+
+        .food-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .meal-plan {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px dashed var(--secondary);
+        }
+
+        .day-plan {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed var(--secondary);
+        }
+
+        .day-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .meal-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .meal-slot {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            min-height: 120px;
+            border: 2px solid var(--success);
+            transition: all 0.3s ease;
+        }
+
+        .meal-slot.empty {
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-style: italic;
+        }
+
+        .meal-slot.filled {
+            background: rgba(168, 213, 186, 0.2);
+        }
+
+        .meal-time {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meal-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .meal-emoji {
+            font-size: 1.8rem;
+        }
+
+        .meal-details {
+            flex-grow: 1;
+        }
+
+        .meal-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .meal-calories {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .remove-meal {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .remove-meal:hover {
+            transform: scale(1.2);
+        }
+
+        /* Purchased Items Display */
+        .purchased-items {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 3px solid var(--success);
+        }
+
+        .purchased-items-title {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: var(--primary);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .purchased-items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .purchased-item {
+            background: rgba(76, 201, 240, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid var(--success);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .purchased-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(76, 201, 240, 0.3);
+        }
+
+        .purchased-item-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--success);
+        }
+
+        .purchased-item-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .purchased-item-effect {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .purchased-item-active {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* Auto Generate Button */
+        .auto-generate-btn {
+            background: linear-gradient(135deg, var(--accent), #ff8fa3);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .auto-generate-btn:hover {
+            background: linear-gradient(135deg, #ff8fa3, var(--accent));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255,107,139,0.4);
+        }
+
+        /* Download Button */
+        .download-plan-btn {
+            background: linear-gradient(135deg, var(--success), #3a86ff);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .download-plan-btn:hover {
+            background: linear-gradient(135deg, #3a86ff, var(--success));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(76, 201, 240, 0.4);
+        }
+
+        /* Food Images */
+        .food-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Reward Effects Display */
+        .reward-effects {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .reward-effect-text {
+            background: rgba(76, 201, 240, 0.9);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        /* Advanced Chapters */
+        .advanced-chapter {
+            background: linear-gradient(135deg, var(--dragon), var(--infinity));
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 15px 35px rgba(255, 107, 53, 0.5);
+            border: 4px solid var(--warning);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .advanced-chapter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+
+        .advanced-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .advanced-desc {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .challenge-badge {
+            display: inline-block;
+            background: var(--warning);
+            color: var(--dark);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 10px 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Power Challenges */
+        .power-challenge {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 3px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .power-challenge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .power-challenge-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .power-challenge-desc {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .power-challenge-reward {
+            display: inline-block;
+            background: var(--success);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .power-challenge-progress {
+            height: 12px;
+            background: #eee;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .power-challenge-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 6px;
+            transition: width 0.7s ease;
+        }
+
+        /* Meal Plan Templates */
+        .meal-plan-templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .meal-plan-template {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            border: 2px solid var(--secondary);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .meal-plan-template:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: var(--primary);
+        }
+
+        .meal-plan-template::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .template-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .template-desc {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .template-calories {
+            display: inline-block;
+            background: var(--warning);
+            color: var(--dark);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Ancient Runes Background -->
+    <div class="ancient-rune" style="top:10%; left:5%;">ᚠ</div>
+    <div class="ancient-rune" style="top:15%; right:8%;">ᚢ</div>
+    <div class="ancient-rune" style="top:60%; left:7%;">ᚦ</div>
+    <div class="ancient-rune" style="top:70%; right:5%;">ᚨ</div>
+    <div class="ancient-rune" style="top:40%; left:10%;">ᚱ</div>
+    <div class="ancient-rune" style="top:30%; right:12%;">ᚲ</div>
+
+    <div class="notification-container" id="notification-container">
+        <!-- Notifications will be added here dynamically -->
+    </div>
+
+    <!-- Reward Effects Display -->
+    <div class="reward-effects" id="reward-effects">
+        <div class="reward-effect-text" id="reward-effect-text"></div>
+    </div>
+
+    <!-- Floating decorative elements -->
+    <div class="floating-element" style="top:10%; left:5%; animation-delay: 0s;">📖</div>
+    <div class="floating-element" style="top:15%; right:8%; animation-delay: 1s;">⚡</div>
+    <div class="floating-element" style="top:60%; left:7%; animation-delay: 2s;">🌟</div>
+    <div class="floating-element" style="top:70%; right:5%; animation-delay: 3s;">🎯</div>
+    <div class="floating-element" style="top:40%; left:10%; animation-delay: 4s;">🔮</div>
+    <div class="floating-element" style="top:30%; right:12%; animation-delay: 5s;">💎</div>
+    <div class="floating-element" style="top:80%; left:15%; animation-delay: 6s;">🍎</div>
+    <div class="floating-element" style="top:20%; right:15%; animation-delay: 7s;">🥦</div>
+
+    <div class="game-container">
+        <div class="story-header">
+            <h1 class="story-title">OmniReader: The Complete Nutrition Chronicles</h1>
+            <p class="story-subtitle">"Through my eyes, you shall see the hidden truths of nourishment. Your journey to mastery begins now."</p>
+            
+            <div class="player-stats">
+                <div class="stat">
+                    <div class="stat-value" id="story-points">1,250</div>
+                    <div class="stat-label"><i class="fas fa-star"></i> Story Points</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="reader-level">5</div>
+                    <div class="stat-label"><i class="fas fa-book-reader"></i> Reader Level</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="chapters-unlocked">1/8</div>
+                    <div class="stat-label"><i class="fas fa-scroll"></i> Chapters</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="achievements">3</div>
+                    <div class="stat-label"><i class="fas fa-trophy"></i> Achievements</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-nav">
+            <button class="chapter-btn active" data-chapter="prologue">
+                <i class="fas fa-book-open"></i> Prologue: The Awakening
+            </button>
+            <button class="chapter-btn locked" data-chapter="rainbow">
+                <i class="fas fa-rainbow"></i> Ch 1: Rainbow Revelation
+            </button>
+            <button class="chapter-btn locked" data-chapter="plate">
+                <i class="fas fa-utensils"></i> Ch 2: Plate Prophecy
+            </button>
+            <button class="chapter-btn locked" data-chapter="hydration">
+                <i class="fas fa-tint"></i> Ch 3: Hydration Chronicles
+            </button>
+            <button class="chapter-btn locked" data-chapter="meal-planning">
+                <i class="fas fa-calendar"></i> Ch 4: Meal Planning Mastery
+            </button>
+            <button class="chapter-btn locked" data-chapter="rewards">
+                <i class="fas fa-gem"></i> Archives of Power
+            </button>
+            <button class="chapter-btn locked" data-chapter="advanced">
+                <i class="fas fa-dragon"></i> Advanced Challenges
+            </button>
+            <button class="chapter-btn locked" data-chapter="mastery">
+                <i class="fas fa-crown"></i> Mastery Trials
+            </button>
+        </div>
+
+        <div class="story-content">
+            <!-- Prologue Section -->
+            <div class="story-section active" id="prologue">
+                <h2 class="chapter-title">Prologue: The Awakening</h2>
+                
+                <div class="narrator-box">
+                    <div class="narrator-text">
+                        "I have watched countless souls struggle with the mysteries of nourishment, but you... you are different. 
+                        There is a spark within you that calls out for true understanding. Today, I shall grant you the vision to see 
+                        what others cannot - the hidden symphony of nutrients, the dance of vitamins and minerals, the very essence of 
+                        life-giving sustenance. Prepare yourself, for your perception of food will never be the same."
+                    </div>
+                    <div class="narrator-identity">— The Omniscient Narrator</div>
+                </div>
+
+                <div class="objective-box">
+                    <div class="objective-title">
+                        <i class="fas fa-bullseye"></i> Current Objective
+                    </div>
+                    <p>Complete the initiation ritual to awaken your nutritional awareness and unlock the first chapter of knowledge.</p>
+                </div>
+
+                <div class="ancient-manuscript">
+                    <div class="manuscript-title">The First Prophecy</div>
+                    <div class="manuscript-content">
+                        "When the seeker of truth embarks upon the path of nourishment, they shall first behold the spectrum of nature's bounty. 
+                        Each hue carries a secret power, a gift from the earth itself. Red strengthens the heart's fire, orange sharpens the mind's eye, 
+                        green fuels the body's vitality. Heed this truth, and you shall unlock the first gate of understanding."
+                    </div>
+                </div>
+
+                <div class="quest-grid">
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-eye"></i></div>
+                        <div class="quest-title">The Initiation Ritual</div>
+                        <div class="quest-desc">Complete the ritual to awaken your nutritional awareness and prove your readiness for the journey ahead.</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">Unlock Chapter 1</div>
+                        <button class="quest-action" data-quest="initiation">Begin Ritual</button>
+                    </div>
+                    
+                    <div class="quest-card locked">
+                        <div class="quest-icon"><i class="fas fa-rainbow"></i></div>
+                        <div class="quest-title">The Rainbow Revelation</div>
+                        <div class="quest-desc">Discover the hidden powers of colored foods and how they interact with your body's energy systems.</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+250 Story Points</div>
+                        <button class="quest-action" disabled>Complete Initiation First</button>
+                    </div>
+                    
+                    <div class="quest-card locked">
+                        <div class="quest-icon"><i class="fas fa-utensils"></i></div>
+                        <div class="quest-title">The Plate Prophecy</div>
+                        <div class="quest-desc">Learn the ancient art of meal composition that optimizes energy flow and nutrient absorption.</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+300 Story Points</div>
+                        <button class="quest-action" disabled>Complete Previous Chapters</button>
+                    </div>
+                </div>
+
+                <div class="story-progression">
+                    <h3>Your Journey Progress</h3>
+                    <div class="progression-bar">
+                        <div class="progression-fill" style="width: 5%"></div>
+                    </div>
+                    <div class="progression-text">
+                        <span>Overall Progress</span>
+                        <span>5% Complete</span>
+                    </div>
+                </div>
+
+                <div class="knowledge-scroll">
+                    <div class="scroll-header">Wisdom of the Ancients</div>
+                    <div class="scroll-content">
+                        "The seeker who masters the rainbow shall see with new eyes. Red foods carry the fire of life, strengthening the heart and sharpening the mind. 
+                        Orange and yellow foods hold the sun's energy, granting clarity of vision and radiant skin. Green foods contain the essence of growth, 
+                        providing boundless energy and strong foundations. Remember this wisdom, and you shall walk the path of vitality."
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chapter 1: Rainbow Revelation -->
+            <div class="story-section" id="rainbow">
+                <h2 class="chapter-title">Chapter 1: Rainbow Revelation</h2>
+                
+                <div class="narrator-box">
+                    <div class="narrator-text">
+                        "Look closer, reader. Do you see it? The vibrant tapestry of colors in nature's bounty is no accident. 
+                        Each hue carries a unique power, a specific benefit to your body. The red of tomatoes strengthens your heart, 
+                        the orange of carrots sharpens your vision. This is the Rainbow Revelation - the first great truth of nutrition."
+                    </div>
+                    <div class="narrator-identity">— The Omniscient Narrator</div>
+                </div>
+
+                <div class="objective-box">
+                    <div class="objective-title">
+                        <i class="fas fa-bullseye"></i> Chapter Objective
+                    </div>
+                    <p>Master the Rainbow Revelation by incorporating all color groups into your diet and understanding their unique benefits.</p>
+                </div>
+
+                <div class="quest-grid">
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-apple-alt" style="color: #ff6b6b;"></i></div>
+                        <div class="quest-title">Red Power</div>
+                        <div class="quest-desc">Consume 3 different red foods (tomatoes, apples, strawberries, etc.) and learn their heart benefits</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+80 Story Points</div>
+                        <button class="quest-action" data-quest="red-power">Begin Quest</button>
+                    </div>
+                    
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-carrot" style="color: #ff9e00;"></i></div>
+                        <div class="quest-title">Orange & Yellow Energy</div>
+                        <div class="quest-desc">Include 2 orange/yellow foods in your meals and understand their vision benefits</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+70 Story Points</div>
+                        <button class="quest-action" data-quest="orange-energy">Begin Quest</button>
+                    </div>
+                    
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-leaf" style="color: #4ecdc4;"></i></div>
+                        <div class="quest-title">Green Vitality</div>
+                        <div class="quest-desc">Eat green vegetables with at least 2 meals for 3 days and experience their energy benefits</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+90 Story Points</div>
+                        <button class="quest-action" data-quest="green-vitality">Begin Quest</button>
+                    </div>
+
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-gem" style="color: #9d4edd;"></i></div>
+                        <div class="quest-title">Purple Wisdom</div>
+                        <div class="quest-desc">Discover the brain-boosting power of purple and blue foods through practical application</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+100 Story Points</div>
+                        <button class="quest-action" data-quest="purple-wisdom">Begin Quest</button>
+                    </div>
+                </div>
+
+                <div class="story-choices">
+                    <div class="story-choice">
+                        <i class="fas fa-seedling"></i>
+                        <div class="story-choice-title">Focus on Greens</div>
+                        <div class="story-choice-desc">Prioritize leafy greens this week for maximum energy and vitality</div>
+                    </div>
+                    <div class="story-choice">
+                        <i class="fas fa-palette"></i>
+                        <div class="story-choice-title">Color Variety</div>
+                        <div class="story-choice-desc">Aim for at least 3 different colors in each meal for balanced nutrition</div>
+                    </div>
+                    <div class="story-choice">
+                        <i class="fas fa-flask"></i>
+                        <div class="story-choice-title">Experiment</div>
+                        <div class="story-choice-desc">Try one new colored vegetable you've never eaten before each week</div>
+                    </div>
+                </div>
+
+                <div class="story-progression">
+                    <h3>Chapter Progress</h3>
+                    <div class="progression-bar">
+                        <div class="progression-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progression-text">
+                        <span>Rainbow Revelation Mastery</span>
+                        <span>0% Complete</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chapter 2: Plate Prophecy -->
+            <div class="story-section" id="plate">
+                <h2 class="chapter-title">Chapter 2: Plate Prophecy</h2>
+                
+                <div class="narrator-box">
+                    <div class="narrator-text">
+                        "Now we delve deeper, reader. The arrangement of nourishment upon your plate is no mere happenstance - it is a sacred geometry. 
+                        The proportions speak of balance, the placement reveals harmony. Learn this prophecy, and you will transform mere eating into 
+                        an act of nutritional alchemy."
+                    </div>
+                    <div class="narrator-identity">— The Omniscient Narrator</div>
+                </div>
+
+                <div class="objective-box">
+                    <div class="objective-title">
+                        <i class="fas fa-bullseye"></i> Chapter Objective
+                    </div>
+                    <p>Master the art of building nutritionally balanced plates using the ancient Plate Prophecy methodology.</p>
+                </div>
+
+                <div class="quest-grid">
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-chart-pie"></i></div>
+                        <div class="quest-title">The Golden Ratio</div>
+                        <div class="quest-desc">Learn and apply the 50/25/25 plate ratio (vegetables/protein/grains) for 5 consecutive meals</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+120 Story Points</div>
+                        <button class="quest-action" data-quest="golden-ratio">Begin Quest</button>
+                    </div>
+                    
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-layer-group"></i></div>
+                        <div class="quest-title">Layering Technique</div>
+                        <div class="quest-desc">Master the art of nutritional layering to maximize nutrient absorption and flavor</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+100 Story Points</div>
+                        <button class="quest-action" data-quest="layering">Begin Quest</button>
+                    </div>
+                    
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-balance-scale"></i></div>
+                        <div class="quest-title">Macronutrient Balance</div>
+                        <div class="quest-desc">Achieve perfect macronutrient balance in 3 different meal types (breakfast, lunch, dinner)</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+150 Story Points</div>
+                        <button class="quest-action" data-quest="macronutrient">Begin Quest</button>
+                    </div>
+                </div>
+
+                <div class="ancient-manuscript">
+                    <div class="manuscript-title">The Plate Prophecy</div>
+                    <div class="manuscript-content">
+                        "Let the plate be divided thus: one half shall be filled with the colors of the earth - greens, reds, and yellows that grow towards the sun. 
+                        One quarter shall contain the builders - proteins that repair and strengthen the temple of your body. The final quarter shall hold the fuel - 
+                        grains and starches that power your journey. Drizzle this creation with the golden oils of health, and you shall have mastered the first law of nourishment."
+                    </div>
+                </div>
+
+                <div class="story-progression">
+                    <h3>Chapter Progress</h3>
+                    <div class="progression-bar">
+                        <div class="progression-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progression-text">
+                        <span>Plate Prophecy Mastery</span>
+                        <span>0% Complete</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chapter 3: Hydration Chronicles -->
+            <div class="story-section" id="hydration">
+                <h2 class="chapter-title">Chapter 3: Hydration Chronicles</h2>
+                
+                <div class="narrator-box">
+                    <div class="narrator-text">
+                        "Water, reader. The most overlooked, yet most essential element of nutrition. It flows through every cell, 
+                        carries every nutrient, powers every process. To master hydration is to unlock a hidden dimension of vitality. 
+                        These chronicles will reveal secrets that even seasoned nutritionists overlook."
+                    </div>
+                    <div class="narrator-identity">— The Omniscient Narrator</div>
+                </div>
+
+                <div class="objective-box">
+                    <div class="objective-title">
+                        <i class="fas fa-bullseye"></i> Chapter Objective
+                    </div>
+                    <p>Master the art and science of optimal hydration and understand its profound effects on your body and mind.</p>
+                </div>
+
+                <div class="quest-grid">
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-tint"></i></div>
+                        <div class="quest-title">The Daily Flow</div>
+                        <div class="quest-desc">Maintain optimal hydration by drinking 8-10 glasses of water daily for one full week</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+90 Story Points</div>
+                        <button class="quest-action" data-quest="daily-flow">Begin Quest</button>
+                    </div>
+                    
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-magic"></i></div>
+                        <div class="quest-title">Infusion Alchemy</div>
+                        <div class="quest-desc">Create and enjoy 3 different nutrient-infused water recipes for enhanced hydration</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+80 Story Points</div>
+                        <button class="quest-action" data-quest="infusion">Begin Quest</button>
+                    </div>
+                    
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-brain"></i></div>
+                        <div class="quest-title">Cognitive Hydration</div>
+                        <div class="quest-desc">Experience and document the mental clarity effects of proper hydration for 5 days</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+110 Story Points</div>
+                        <button class="quest-action" data-quest="cognitive">Begin Quest</button>
+                    </div>
+                </div>
+
+                <div class="knowledge-scroll">
+                    <div class="scroll-header">The Water Wisdom</div>
+                    <div class="scroll-content">
+                        "Water is not merely a substance to quench thirst - it is the river of life that flows through your being. 
+                        When properly hydrated, your thoughts flow like clear streams, your energy moves like mighty rivers, and your body functions 
+                        with the precision of a well-oiled machine. The chronicles teach us that dehydration is the silent thief of vitality, 
+                        while optimal hydration is the unsung hero of peak performance."
+                    </div>
+                </div>
+
+                <div class="story-progression">
+                    <h3>Chapter Progress</h3>
+                    <div class="progression-bar">
+                        <div class="progression-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progression-text">
+                        <span>Hydration Mastery</span>
+                        <span>0% Complete</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chapter 4: Meal Planning Mastery -->
+            <div class="story-section" id="meal-planning">
+                <h2 class="chapter-title">Chapter 4: Meal Planning Mastery</h2>
+                
+                <div class="narrator-box">
+                    <div class="narrator-text">
+                        "The final piece of the puzzle, reader. Knowledge without application is like a book never opened. 
+                        Meal planning is where theory becomes practice, where nutritional wisdom transforms into daily vitality. 
+                        Here, you will learn to weave all previous lessons into a tapestry of sustainable nourishment."
+                    </div>
+                    <div class="narrator-identity">— The Omniscient Narrator</div>
+                </div>
+
+                <div class="objective-box">
+                    <div class="objective-title">
+                        <i class="fas fa-bullseye"></i> Chapter Objective
+                    </div>
+                    <p>Master the art and science of effective meal planning to make optimal nutrition effortless and sustainable.</p>
+                </div>
+
+                <div class="meal-planning">
+                    <div class="food-selection">
+                        <h3><i class="fas fa-apple-alt"></i> Build Your Meal Plan</h3>
+                        
+                        <div class="food-categories">
+                            <div class="category-btn active" data-category="breakfast">Breakfast</div>
+                            <div class="category-btn" data-category="lunch">Lunch</div>
+                            <div class="category-btn" data-category="dinner">Dinner</div>
+                            <div class="category-btn" data-category="snacks">Snacks</div>
+                        </div>
+                        
+                        <button class="auto-generate-btn" id="auto-generate-btn">
+                            <i class="fas fa-robot"></i> Generate Meal Plan Automatically
+                        </button>
+                        
+                        <div class="food-options" id="food-options">
+                            <!-- Food options will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="meal-plan">
+                        <h3><i class="fas fa-calendar-week"></i> This Week's Plan</h3>
+                        
+                        <div class="day-plan" id="monday">
+                            <div class="day-title"><i class="fas fa-sun"></i> Monday</div>
+                            <div class="meal-slots">
+                                <div class="meal-slot empty" data-meal="breakfast" data-day="monday">
+                                    <i class="fas fa-plus"></i> Add Breakfast
+                                </div>
+                                <div class="meal-slot empty" data-meal="lunch" data-day="monday">
+                                    <i class="fas fa-plus"></i> Add Lunch
+                                </div>
+                                <div class="meal-slot empty" data-meal="dinner" data-day="monday">
+                                    <i class="fas fa-plus"></i> Add Dinner
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="day-plan" id="tuesday">
+                            <div class="day-title"><i class="fas fa-cloud-sun"></i> Tuesday</div>
+                            <div class="meal-slots">
+                                <div class="meal-slot empty" data-meal="breakfast" data-day="tuesday">
+                                    <i class="fas fa-plus"></i> Add Breakfast
+                                </div>
+                                <div class="meal-slot empty" data-meal="lunch" data-day="tuesday">
+                                    <i class="fas fa-plus"></i> Add Lunch
+                                </div>
+                                <div class="meal-slot empty" data-meal="dinner" data-day="tuesday">
+                                    <i class="fas fa-plus"></i> Add Dinner
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="day-plan" id="wednesday">
+                            <div class="day-title"><i class="fas fa-cloud"></i> Wednesday</div>
+                            <div class="meal-slots">
+                                <div class="meal-slot empty" data-meal="breakfast" data-day="wednesday">
+                                    <i class="fas fa-plus"></i> Add Breakfast
+                                </div>
+                                <div class="meal-slot empty" data-meal="lunch" data-day="wednesday">
+                                    <i class="fas fa-plus"></i> Add Lunch
+                                </div>
+                                <div class="meal-slot empty" data-meal="dinner" data-day="wednesday">
+                                    <i class="fas fa-plus"></i> Add Dinner
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="quest-action" id="save-plan-btn" style="margin-top: 20px;">
+                            <i class="fas fa-save"></i> Save Meal Plan
+                        </button>
+                        
+                        <button class="download-plan-btn" id="download-plan-btn" style="margin-top: 10px;">
+                            <i class="fas fa-download"></i> Download Meal Plan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Meal Plan Templates -->
+                <div class="meal-plan-templates">
+                    <div class="meal-plan-template" data-template="balanced">
+                        <div class="template-title"><i class="fas fa-balance-scale"></i> Balanced Nutrition Plan</div>
+                        <div class="template-desc">A well-rounded plan with optimal protein, carbs, and healthy fats for sustained energy throughout the day.</div>
+                        <div class="template-calories">~2,100 calories/day</div>
+                    </div>
+                    
+                    <div class="meal-plan-template" data-template="vegetarian">
+                        <div class="template-title"><i class="fas fa-leaf"></i> Plant-Based Power Plan</div>
+                        <div class="template-desc">A delicious vegetarian plan packed with plant proteins, fiber, and essential nutrients.</div>
+                        <div class="template-calories">~1,900 calories/day</div>
+                    </div>
+                    
+                    <div class="meal-plan-template" data-template="high-protein">
+                        <div class="template-title"><i class="fas fa-dumbbell"></i> High Protein Performance</div>
+                        <div class="template-desc">Optimized for muscle recovery and sustained energy with lean proteins and complex carbs.</div>
+                        <div class="template-calories">~2,300 calories/day</div>
+                    </div>
+                    
+                    <div class="meal-plan-template" data-template="mediterranean">
+                        <div class="template-title"><i class="fas fa-utensils"></i> Mediterranean Lifestyle</div>
+                        <div class="template-desc">Heart-healthy plan rich in olive oil, fish, vegetables, and whole grains.</div>
+                        <div class="template-calories">~2,000 calories/day</div>
+                    </div>
+                </div>
+
+                <div class="quest-grid">
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div class="quest-title">Weekly Blueprint</div>
+                        <div class="quest-desc">Create and follow a complete 7-day meal plan incorporating all nutritional principles</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+200 Story Points</div>
+                        <button class="quest-action" data-quest="weekly-blueprint">Begin Quest</button>
+                    </div>
+                    
+                    <div class="quest-card">
+                        <div class="quest-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <div class="quest-title">Efficient Shopping</div>
+                        <div class="quest-desc">Master the art of efficient grocery shopping based on your meal plan for 2 consecutive weeks</div>
+                        <div class="quest-progress">
+                            <div class="quest-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="quest-reward">+150 Story Points</div>
+                        <button class="quest-action" data-quest="efficient-shopping">Begin Quest</button>
+                    </div>
+                </div>
+
+                <div class="story-progression">
+                    <h3>Chapter Progress</h3>
+                    <div class="progression-bar">
+                        <div class="progression-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progression-text">
+                        <span>Meal Planning Mastery</span>
+                        <span>0% Complete</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rewards Shop Section -->
+            <div class="story-section" id="rewards">
+                <h2 class="chapter-title">Archives of Power</h2>
+                
+                <div class="narrator-box">
+                    <div class="narrator-text">
+                        "Every story point you earn carries real power, reader. These are not mere tokens - they are fragments of understanding, 
+                        pieces of the grand tapestry of nutrition knowledge. Spend them wisely in these archives to unlock abilities that will 
+                        transform not just your nutrition knowledge, but your very approach to health. Choose carefully - your decisions here 
+                        will shape your journey in ways you cannot yet imagine."
+                    </div>
+                    <div class="narrator-identity">— The Omniscient Narrator</div>
+                </div>
+
+                <div class="rewards-shop">
+                    <div class="reward-item">
+                        <div class="reward-icon"><i class="fas fa-book-spells"></i></div>
+                        <div class="reward-title">Nutrition Grimoire</div>
+                        <div class="reward-desc">Unlock the ancient text containing forgotten nutrition wisdom from civilizations past</div>
+                        <div class="reward-effect">+15% to all knowledge gains, unlocks hidden recipes</div>
+                        <div class="reward-price">450 Points</div>
+                    </div>
+                    
+                    <div class="reward-item">
+                        <div class="reward-icon"><i class="fas fa-eye"></i></div>
+                        <div class="reward-title">Reader's Insight</div>
+                        <div class="reward-desc">Gain the ability to see nutritional values and hidden properties of foods at a glance</div>
+                        <div class="reward-effect">Unlocks advanced food analysis and meal optimization</div>
+                        <div class="reward-price">650 Points</div>
+                    </div>
+                    
+                    <div class="reward-item">
+                        <div class="reward-icon"><i class="fas fa-hourglass"></i></div>
+                        <div class="reward-title">Meal Time Manipulation</div>
+                        <div class="reward-desc">Slow down time during meal preparation for perfect results and enhanced enjoyment</div>
+                        <div class="reward-effect">+30% cooking speed, +20% meal satisfaction</div>
+                        <div class="reward-price">300 Points</div>
+                    </div>
+                    
+                    <div class="reward-item">
+                        <div class="reward-icon"><i class="fas fa-chess-queen"></i></div>
+                        <div class="reward-title">Strategy Manual</div>
+                        <div class="reward-desc">Access advanced meal planning strategies used by ancient nutrition masters</div>
+                        <div class="reward-effect">Unlocks expert meal plans and seasonal eating strategies</div>
+                        <div class="reward-price">750 Points</div>
+                    </div>
+                    
+                    <div class="reward-item">
+                        <div class="reward-icon"><i class="fas fa-dragon"></i></div>
+                        <div class="reward-title">Dragon's Metabolism</div>
+                        <div class="reward-desc">Temporarily boost your metabolism to legendary levels for increased energy and vitality</div>
+                        <div class="reward-effect">+25% metabolic rate for 48 hours, +15% energy levels</div>
+                        <div class="reward-price">550 Points</div>
+                    </div>
+                    
+                    <div class="reward-item">
+                        <div class="reward-icon"><i class="fas fa-infinity"></i></div>
+                        <div class="reward-title">Infinite Hydration</div>
+                        <div class="reward-desc">Your body becomes supremely efficient at utilizing water at the cellular level</div>
+                        <div class="reward-effect">Permanent +40% hydration efficiency, clearer skin, better focus</div>
+                        <div class="reward-price">900 Points</div>
+                    </div>
+
+                    <div class="reward-item">
+                        <div class="reward-icon"><i class="fas fa-seedling"></i></div>
+                        <div class="reward-title">Green Thumb Blessing</div>
+                        <div class="reward-desc">Your body becomes more efficient at absorbing nutrients from plant-based foods</div>
+                        <div class="reward-effect">+35% nutrient absorption from vegetables and fruits</div>
+                        <div class="reward-price">600 Points</div>
+                    </div>
+
+                    <div class="reward-item">
+                        <div class="reward-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="reward-title">Immunity Fortress</div>
+                        <div class="reward-desc">Strengthen your immune system through optimized nutrient combinations</div>
+                        <div class="reward-effect">Unlocks immunity-boosting meal plans and recipes</div>
+                        <div class="reward-price">700 Points</div>
+                    </div>
+                </div>
+
+                <!-- Power Challenges Section -->
+                <div id="power-challenges-container">
+                    <!-- Power challenges will be dynamically added here -->
+                </div>
+
+                <!-- Purchased Items Display -->
+                <div class="purchased-items">
+                    <div class="purchased-items-title">
+                        <i class="fas fa-trophy"></i> Your Collection of Power
+                    </div>
+                    <div class="purchased-items-grid" id="purchased-items-grid">
+                        <!-- Purchased items will be displayed here -->
+                    </div>
+                </div>
+
+                <div class="story-progression">
+                    <h3>Your Power Growth</h3>
+                    <div class="progression-bar">
+                        <div class="progression-fill" id="power-progression-bar" style="width: 0%"></div>
+                    </div>
+                    <div class="progression-text">
+                        <span>Omniscient Power Level</span>
+                        <span id="power-progression-text">0% Unlocked</span>
+                    </div>
+                </div>
+
+                <div class="narrator-box">
+                    <div class="narrator-text">
+                        "I sense your growing power, reader. With each reward claimed, you draw closer to true mastery. 
+                        Remember that these abilities are but tools - the true transformation comes from within. 
+                        Your dedication to understanding the deep mysteries of nutrition is what truly shapes your journey."
+                    </div>
+                    <div class="narrator-identity">— The Omniscient Narrator</div>
+                </div>
+            </div>
+
+            <!-- Advanced Challenges Section -->
+            <div class="story-section" id="advanced">
+                <h2 class="chapter-title">Advanced Challenges</h2>
+                
+                <div class="narrator-box">
+                    <div class="narrator-text">
+                        "The Archives of Power have revealed new dimensions to your journey, reader. With the abilities you've unlocked, 
+                        you are now ready for challenges that would overwhelm ordinary seekers. These trials will test not just your knowledge, 
+                        but your ability to apply it in extraordinary circumstances."
+                    </div>
+                    <div class="narrator-identity">— The Omniscient Narrator</div>
+                </div>
+
+                <div class="advanced-chapter">
+                    <div class="advanced-title">The Dragon's Metabolism Trials</div>
+                    <div class="advanced-desc">
+                        "Only those who have unlocked the Dragon's Metabolism can attempt these challenges. 
+                        Your enhanced energy systems will be pushed to their limits as you discover new frontiers of nutritional science."
+                    </div>
+                    <div class="quest-grid">
+                        <div class="quest-card">
+                            <div class="quest-icon"><i class="fas fa-fire" style="color: var(--dragon);"></i></div>
+                            <div class="quest-title">Metabolic Ignition</div>
+                            <div class="quest-desc">Achieve peak metabolic efficiency by optimizing nutrient timing for 7 consecutive days</div>
+                            <div class="quest-progress">
+                                <div class="quest-progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="quest-reward">+300 Story Points</div>
+                            <div class="challenge-badge">Dragon's Metabolism Required</div>
+                            <button class="quest-action" data-quest="metabolic-ignition">Begin Challenge</button>
+                        </div>
+                        
+                        <div class="quest-card">
+                            <div class="quest-icon"><i class="fas fa-bolt" style="color: var(--dragon);"></i></div>
+                            <div class="quest-title">Energy Surge Protocol</div>
+                            <div class="quest-desc">Master the art of sustained energy through strategic nutrient combinations</div>
+                            <div class="quest-progress">
+                                <div class="quest-progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="quest-reward">+350 Story Points</div>
+                            <div class="challenge-badge">Dragon's Metabolism Required</div>
+                            <button class="quest-action" data-quest="energy-surge">Begin Challenge</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="advanced-chapter">
+                    <div class="advanced-title">Infinite Hydration Mastery</div>
+                    <div class="advanced-desc">
+                        "Those blessed with Infinite Hydration can explore the deepest mysteries of cellular nourishment. 
+                        These challenges will reveal how optimal hydration transforms every aspect of your being."
+                    </div>
+                    <div class="quest-grid">
+                        <div class="quest-card">
+                            <div class="quest-icon"><i class="fas fa-tint" style="color: var(--infinity);"></i></div>
+                            <div class="quest-title">Cellular Optimization</div>
+                            <div class="quest-desc">Achieve perfect cellular hydration balance through advanced electrolyte management</div>
+                            <div class="quest-progress">
+                                <div class="quest-progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="quest-reward">+280 Story Points</div>
+                            <div class="challenge-badge">Infinite Hydration Required</div>
+                            <button class="quest-action" data-quest="cellular-optimization">Begin Challenge</button>
+                        </div>
+                        
+                        <div class="quest-card">
+                            <div class="quest-icon"><i class="fas fa-brain" style="color: var(--infinity);"></i></div>
+                            <div class="quest-title">Neural Hydration</div>
+                            <div class="quest-desc">Master the connection between optimal hydration and cognitive performance</div>
+                            <div class="quest-progress">
+                                <div class="quest-progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="quest-reward">+320 Story Points</div>
+                            <div class="challenge-badge">Infinite Hydration Required</div>
+                            <button class="quest-action" data-quest="neural-hydration">Begin Challenge</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story-progression">
+                    <h3>Advanced Progress</h3>
+                    <div class="progression-bar">
+                        <div class="progression-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progression-text">
+                        <span>Challenge Mastery</span>
+                        <span>0% Complete</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mastery Trials Section -->
+            <div class="story-section" id="mastery">
+                <h2 class="chapter-title">Mastery Trials</h2>
+                
+                <div class="narrator-box">
+                    <div class="narrator-text">
+                        "You stand at the threshold of true mastery, reader. These final trials combine all you have learned with the powers you have unlocked. 
+                        Few have reached this stage, and fewer still have succeeded. Your journey culminates here - prove yourself worthy of the title 'OmniReader'."
+                    </div>
+                    <div class="narrator-identity">— The Omniscient Narrator</div>
+                </div>
+
+                <div class="advanced-chapter">
+                    <div class="advanced-title">The Grand Synthesis</div>
+                    <div class="advanced-desc">
+                        "Combine all your acquired powers and knowledge to achieve nutritional harmony beyond ordinary understanding. 
+                        This trial requires at least 3 Archives of Power rewards to attempt."
+                    </div>
+                    <div class="quest-grid">
+                        <div class="quest-card">
+                            <div class="quest-icon"><i class="fas fa-crown" style="color: var(--warning);"></i></div>
+                            <div class="quest-title">Harmonic Nutrition</div>
+                            <div class="quest-desc">Create and follow a perfect 21-day nutrition plan that optimizes all body systems simultaneously</div>
+                            <div class="quest-progress">
+                                <div class="quest-progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="quest-reward">+500 Story Points</div>
+                            <div class="challenge-badge">3+ Powers Required</div>
+                            <button class="quest-action" data-quest="harmonic-nutrition">Begin Trial</button>
+                        </div>
+                        
+                        <div class="quest-card">
+                            <div class="quest-icon"><i class="fas fa-infinity" style="color: var(--infinity);"></i></div>
+                            <div class="quest-title">Eternal Vitality</div>
+                            <div class="quest-desc">Achieve and maintain peak physical and mental performance for 30 consecutive days</div>
+                            <div class="quest-progress">
+                                <div class="quest-progress-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="quest-reward">+600 Story Points</div>
+                            <div class="challenge-badge">4+ Powers Required</div>
+                            <button class="quest-action" data-quest="eternal-vitality">Begin Trial</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ancient-manuscript">
+                    <div class="manuscript-title">The Final Prophecy</div>
+                    <div class="manuscript-content">
+                        "When the seeker has mastered the rainbow, balanced the plate, commanded the waters, and planned with wisdom, 
+                        when they have unlocked the archives of power and faced the advanced challenges, only then may they attempt the final trials. 
+                        The OmniReader who completes these trials shall achieve a state of nourishment that transcends ordinary understanding, 
+                        becoming a living testament to the harmony of mind, body, and spirit through nutrition."
+                    </div>
+                </div>
+
+                <div class="story-progression">
+                    <h3>Mastery Progress</h3>
+                    <div class="progression-bar">
+                        <div class="progression-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progression-text">
+                        <span>OmniReader Mastery</span>
+                        <span>0% Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Game State
+        const gameState = {
+            storyPoints: 1250,
+            readerLevel: 5,
+            chaptersUnlocked: 1,
+            achievements: 3,
+            currentChapter: 'prologue',
+            rewards: [
+                { id: 1, name: 'Nutrition Grimoire', price: 450, purchased: false, effect: '+15% to all knowledge gains', icon: 'fa-book-spells', unlocks: [] },
+                { id: 2, name: 'Reader\'s Insight', price: 650, purchased: false, effect: 'Unlocks advanced food analysis', icon: 'fa-eye', unlocks: [] },
+                { id: 3, name: 'Meal Time Manipulation', price: 300, purchased: false, effect: '+30% cooking speed', icon: 'fa-hourglass', unlocks: [] },
+                { id: 4, name: 'Strategy Manual', price: 750, purchased: false, effect: 'Unlocks expert meal plans', icon: 'fa-chess-queen', unlocks: [] },
+                { id: 5, name: 'Dragon\'s Metabolism', price: 550, purchased: false, effect: '+25% metabolic rate for 48h', icon: 'fa-dragon', unlocks: ['metabolic-ignition', 'energy-surge'] },
+                { id: 6, name: 'Infinite Hydration', price: 900, purchased: false, effect: 'Permanent hydration bonus', icon: 'fa-infinity', unlocks: ['cellular-optimization', 'neural-hydration'] },
+                { id: 7, name: 'Green Thumb Blessing', price: 600, purchased: false, effect: '+35% plant nutrient absorption', icon: 'fa-seedling', unlocks: [] },
+                { id: 8, name: 'Immunity Fortress', price: 700, purchased: false, effect: 'Unlocks immunity-boosting plans', icon: 'fa-shield-alt', unlocks: [] }
+            ],
+            quests: {
+                // Prologue quests
+                initiation: { progress: 0, completed: false, chapter: 'prologue', requiredProgress: 100 },
+                
+                // Chapter 1 quests
+                'red-power': { progress: 0, completed: false, chapter: 'rainbow', requiredProgress: 100 },
+                'orange-energy': { progress: 0, completed: false, chapter: 'rainbow', requiredProgress: 100 },
+                'green-vitality': { progress: 0, completed: false, chapter: 'rainbow', requiredProgress: 100 },
+                'purple-wisdom': { progress: 0, completed: false, chapter: 'rainbow', requiredProgress: 100 },
+                
+                // Chapter 2 quests
+                'golden-ratio': { progress: 0, completed: false, chapter: 'plate', requiredProgress: 100 },
+                'layering': { progress: 0, completed: false, chapter: 'plate', requiredProgress: 100 },
+                'macronutrient': { progress: 0, completed: false, chapter: 'plate', requiredProgress: 100 },
+                
+                // Chapter 3 quests
+                'daily-flow': { progress: 0, completed: false, chapter: 'hydration', requiredProgress: 100 },
+                'infusion': { progress: 0, completed: false, chapter: 'hydration', requiredProgress: 100 },
+                'cognitive': { progress: 0, completed: false, chapter: 'hydration', requiredProgress: 100 },
+                
+                // Chapter 4 quests
+                'weekly-blueprint': { progress: 0, completed: false, chapter: 'meal-planning', requiredProgress: 100 },
+                'efficient-shopping': { progress: 0, completed: false, chapter: 'meal-planning', requiredProgress: 100 },
+                
+                // Advanced Challenges
+                'metabolic-ignition': { progress: 0, completed: false, chapter: 'advanced', requiredProgress: 100, requires: 'Dragon\'s Metabolism' },
+                'energy-surge': { progress: 0, completed: false, chapter: 'advanced', requiredProgress: 100, requires: 'Dragon\'s Metabolism' },
+                'cellular-optimization': { progress: 0, completed: false, chapter: 'advanced', requiredProgress: 100, requires: 'Infinite Hydration' },
+                'neural-hydration': { progress: 0, completed: false, chapter: 'advanced', requiredProgress: 100, requires: 'Infinite Hydration' },
+                
+                // Mastery Trials
+                'harmonic-nutrition': { progress: 0, completed: false, chapter: 'mastery', requiredProgress: 100, requires: '3+ Powers' },
+                'eternal-vitality': { progress: 0, completed: false, chapter: 'mastery', requiredProgress: 100, requires: '4+ Powers' }
+            },
+            powerChallenges: {
+                'Nutrition Grimoire': { progress: 0, completed: false, requiredProgress: 100, reward: 150 },
+                'Reader\'s Insight': { progress: 0, completed: false, requiredProgress: 100, reward: 200 },
+                'Meal Time Manipulation': { progress: 0, completed: false, requiredProgress: 100, reward: 100 },
+                'Strategy Manual': { progress: 0, completed: false, requiredProgress: 100, reward: 180 },
+                'Dragon\'s Metabolism': { progress: 0, completed: false, requiredProgress: 100, reward: 220 },
+                'Infinite Hydration': { progress: 0, completed: false, requiredProgress: 100, reward: 250 },
+                'Green Thumb Blessing': { progress: 0, completed: false, requiredProgress: 100, reward: 170 },
+                'Immunity Fortress': { progress: 0, completed: false, requiredProgress: 100, reward: 190 }
+            },
+            chapterProgress: {
+                prologue: 0,
+                rainbow: 0,
+                plate: 0,
+                hydration: 0,
+                'meal-planning': 0,
+                advanced: 0,
+                mastery: 0
+            },
+            playerName: 'Seeker',
+            mealPlans: [],
+            activeRewards: []
+        };
+
+        // Enhanced Food database for meal planning with images
+        const foodDatabase = {
+            breakfast: [
+                { name: "Oatmeal", emoji: "🥣", calories: 150, image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200&h=120&fit=crop" },
+                { name: "Scrambled Eggs", emoji: "🍳", calories: 200, image: "https://images.unsplash.com/photo-1582515073490-39981397c445?w=200&h=120&fit=crop" },
+                { name: "Greek Yogurt", emoji: "🥛", calories: 120, image: "https://images.unsplash.com/photo-1567306301408-9b74779a11af?w=200&h=120&fit=crop" },
+                { name: "Avocado Toast", emoji: "🍞", calories: 250, image: "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=200&h=120&fit=crop" },
+                { name: "Smoothie Bowl", emoji: "🥤", calories: 180, image: "https://images.unsplash.com/photo-1553530666-ba11a1ef1cd2?w=200&h=120&fit=crop" },
+                { name: "Pancakes", emoji: "🥞", calories: 300, image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=200&h=120&fit=crop" }
+            ],
+            lunch: [
+                { name: "Chicken Salad", emoji: "🥗", calories: 350, image: "https://images.unsplash.com/photo-1546793665-c74683f339c1?w=200&h=120&fit=crop" },
+                { name: "Quinoa Bowl", emoji: "🍲", calories: 400, image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200&h=120&fit=crop" },
+                { name: "Veggie Wrap", emoji: "🌯", calories: 320, image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200&h=120&fit=crop" },
+                { name: "Salmon", emoji: "🐟", calories: 280, image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=200&h=120&fit=crop" },
+                { name: "Lentil Soup", emoji: "🍵", calories: 220, image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200&h=120&fit=crop" },
+                { name: "Turkey Sandwich", emoji: "🥪", calories: 380, image: "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?w=200&h=120&fit=crop" }
+            ],
+            dinner: [
+                { name: "Stir Fry", emoji: "🍜", calories: 450, image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=200&h=120&fit=crop" },
+                { name: "Pasta", emoji: "🍝", calories: 500, image: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=200&h=120&fit=crop" },
+                { name: "Grilled Chicken", emoji: "🍗", calories: 350, image: "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=200&h=120&fit=crop" },
+                { name: "Vegetable Curry", emoji: "🍛", calories: 380, image: "https://images.unsplash.com/photo-1455855748-8e4eb103dff2?w=200&h=120&fit=crop" },
+                { name: "Baked Potato", emoji: "🥔", calories: 300, image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?w=200&h=120&fit=crop" },
+                { name: "Tofu Scramble", emoji: "🧆", calories: 280, image: "https://images.unsplash.com/photo-1617096083745-5ed2d4b81a8d?w=200&h=120&fit=crop" }
+            ],
+            snacks: [
+                { name: "Apple", emoji: "🍎", calories: 95, image: "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=200&h=120&fit=crop" },
+                { name: "Almonds", emoji: "🥜", calories: 160, image: "https://images.unsplash.com/photo-1623417604556-4eab1f2c3c3e?w=200&h=120&fit=crop" },
+                { name: "Carrot Sticks", emoji: "🥕", calories: 50, image: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=200&h=120&fit=crop" },
+                { name: "Greek Yogurt", emoji: "🥛", calories: 120, image: "https://images.unsplash.com/photo-1567306301408-9b74779a11af?w=200&h=120&fit=crop" },
+                { name: "Protein Bar", emoji: "🍫", calories: 200, image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=200&h=120&fit=crop" },
+                { name: "Rice Cakes", emoji: "🍘", calories: 60, image: "https://images.unsplash.com/photo-1625937286074-9ca72d475db0?w=200&h=120&fit=crop" }
+            ]
+        };
+
+        // Meal Plan Templates
+        const mealPlanTemplates = {
+            balanced: {
+                name: "Balanced Nutrition Plan",
+                description: "A well-rounded plan with optimal protein, carbs, and healthy fats for sustained energy throughout the day.",
+                calories: 2100,
+                meals: {
+                    monday: {
+                        breakfast: { name: "Oatmeal", emoji: "🥣", calories: 150 },
+                        lunch: { name: "Chicken Salad", emoji: "🥗", calories: 350 },
+                        dinner: { name: "Grilled Chicken", emoji: "🍗", calories: 350 }
+                    },
+                    tuesday: {
+                        breakfast: { name: "Scrambled Eggs", emoji: "🍳", calories: 200 },
+                        lunch: { name: "Quinoa Bowl", emoji: "🍲", calories: 400 },
+                        dinner: { name: "Vegetable Curry", emoji: "🍛", calories: 380 }
+                    },
+                    wednesday: {
+                        breakfast: { name: "Greek Yogurt", emoji: "🥛", calories: 120 },
+                        lunch: { name: "Salmon", emoji: "🐟", calories: 280 },
+                        dinner: { name: "Stir Fry", emoji: "🍜", calories: 450 }
+                    }
+                }
+            },
+            vegetarian: {
+                name: "Plant-Based Power Plan",
+                description: "A delicious vegetarian plan packed with plant proteins, fiber, and essential nutrients.",
+                calories: 1900,
+                meals: {
+                    monday: {
+                        breakfast: { name: "Smoothie Bowl", emoji: "🥤", calories: 180 },
+                        lunch: { name: "Veggie Wrap", emoji: "🌯", calories: 320 },
+                        dinner: { name: "Tofu Scramble", emoji: "🧆", calories: 280 }
+                    },
+                    tuesday: {
+                        breakfast: { name: "Avocado Toast", emoji: "🍞", calories: 250 },
+                        lunch: { name: "Lentil Soup", emoji: "🍵", calories: 220 },
+                        dinner: { name: "Vegetable Curry", emoji: "🍛", calories: 380 }
+                    },
+                    wednesday: {
+                        breakfast: { name: "Oatmeal", emoji: "🥣", calories: 150 },
+                        lunch: { name: "Quinoa Bowl", emoji: "🍲", calories: 400 },
+                        dinner: { name: "Baked Potato", emoji: "🥔", calories: 300 }
+                    }
+                }
+            },
+            'high-protein': {
+                name: "High Protein Performance",
+                description: "Optimized for muscle recovery and sustained energy with lean proteins and complex carbs.",
+                calories: 2300,
+                meals: {
+                    monday: {
+                        breakfast: { name: "Scrambled Eggs", emoji: "🍳", calories: 200 },
+                        lunch: { name: "Turkey Sandwich", emoji: "🥪", calories: 380 },
+                        dinner: { name: "Grilled Chicken", emoji: "🍗", calories: 350 }
+                    },
+                    tuesday: {
+                        breakfast: { name: "Greek Yogurt", emoji: "🥛", calories: 120 },
+                        lunch: { name: "Chicken Salad", emoji: "🥗", calories: 350 },
+                        dinner: { name: "Salmon", emoji: "🐟", calories: 280 }
+                    },
+                    wednesday: {
+                        breakfast: { name: "Protein Bar", emoji: "🍫", calories: 200 },
+                        lunch: { name: "Quinoa Bowl", emoji: "🍲", calories: 400 },
+                        dinner: { name: "Pasta", emoji: "🍝", calories: 500 }
+                    }
+                }
+            },
+            mediterranean: {
+                name: "Mediterranean Lifestyle",
+                description: "Heart-healthy plan rich in olive oil, fish, vegetables, and whole grains.",
+                calories: 2000,
+                meals: {
+                    monday: {
+                        breakfast: { name: "Greek Yogurt", emoji: "🥛", calories: 120 },
+                        lunch: { name: "Salmon", emoji: "🐟", calories: 280 },
+                        dinner: { name: "Vegetable Curry", emoji: "🍛", calories: 380 }
+                    },
+                    tuesday: {
+                        breakfast: { name: "Oatmeal", emoji: "🥣", calories: 150 },
+                        lunch: { name: "Chicken Salad", emoji: "🥗", calories: 350 },
+                        dinner: { name: "Pasta", emoji: "🍝", calories: 500 }
+                    },
+                    wednesday: {
+                        breakfast: { name: "Avocado Toast", emoji: "🍞", calories: 250 },
+                        lunch: { name: "Lentil Soup", emoji: "🍵", calories: 220 },
+                        dinner: { name: "Grilled Chicken", emoji: "🍗", calories: 350 }
+                    }
+                }
+            }
+        };
+
+        // Power Challenge Descriptions
+        const powerChallengeDescriptions = {
+            'Nutrition Grimoire': 'Master the ancient recipes from the grimoire by preparing 3 different historical dishes',
+            'Reader\'s Insight': 'Use your insight to analyze 10 different foods and identify their hidden nutritional properties',
+            'Meal Time Manipulation': 'Prepare 5 meals in under 30 minutes each using your time manipulation abilities',
+            'Strategy Manual': 'Create and execute a perfect 7-day meal plan using advanced strategic principles',
+            'Dragon\'s Metabolism': 'Complete a 3-day metabolic challenge with optimized nutrient timing',
+            'Infinite Hydration': 'Maintain perfect hydration levels for 5 consecutive days',
+            'Green Thumb Blessing': 'Consume 10 different plant-based foods and maximize nutrient absorption',
+            'Immunity Fortress': 'Follow an immunity-boosting meal plan for 7 days and track improvements'
+        };
+
+        // DOM Elements
+        const chapterButtons = document.querySelectorAll('.chapter-btn');
+        const storySections = document.querySelectorAll('.story-section');
+        const questActions = document.querySelectorAll('.quest-action');
+        const storyPointsElement = document.getElementById('story-points');
+        const readerLevelElement = document.getElementById('reader-level');
+        const chaptersUnlockedElement = document.getElementById('chapters-unlocked');
+        const achievementsElement = document.getElementById('achievements');
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const foodOptionsContainer = document.getElementById('food-options');
+        const mealSlots = document.querySelectorAll('.meal-slot');
+        const savePlanBtn = document.getElementById('save-plan-btn');
+        const downloadPlanBtn = document.getElementById('download-plan-btn');
+        const autoGenerateBtn = document.getElementById('auto-generate-btn');
+        const purchasedItemsGrid = document.getElementById('purchased-items-grid');
+        const powerChallengesContainer = document.getElementById('power-challenges-container');
+        const powerProgressionBar = document.getElementById('power-progression-bar');
+        const powerProgressionText = document.getElementById('power-progression-text');
+        const rewardEffects = document.getElementById('reward-effects');
+        const rewardEffectText = document.getElementById('reward-effect-text');
+
+        // Initialize the game
+        function initGame() {
+            updateStats();
+            setupEventListeners();
+            loadFoodOptions('breakfast');
+            updatePurchasedItems();
+            updateQuestAvailability();
+            updatePowerChallenges();
+            updatePowerProgression();
+            
+            // Show initial story notification
+            setTimeout(() => {
+                showNotification('The Omniscient Narrator has awakened. Your nutrition journey is about to transform in ways you cannot yet imagine.', 'story');
+            }, 1500);
+
+            // Add periodic narrator messages
+            setInterval(() => {
+                const messages = [
+                    "I see you progressing, reader. Your understanding grows with each passing moment.",
+                    "The path to mastery is long, but you walk it with determination. This pleases me.",
+                    "Remember, true power comes not from what you consume, but from what you understand.",
+                    "The ancient secrets of nutrition await your discovery. Continue your quest with courage.",
+                    "I have watched many seekers on this path. Your progress is... remarkable."
+                ];
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                showNotification(randomMessage, 'info');
+            }, 120000); // Every 2 minutes
+        }
+
+        // Update game stats display
+        function updateStats() {
+            storyPointsElement.textContent = gameState.storyPoints.toLocaleString();
+            readerLevelElement.textContent = gameState.readerLevel;
+            chaptersUnlockedElement.textContent = `${gameState.chaptersUnlocked}/8`;
+            achievementsElement.textContent = gameState.achievements;
+            
+            // Update chapter buttons based on unlocked status
+            updateChapterButtons();
+        }
+
+        // Update chapter buttons based on game progress
+        function updateChapterButtons() {
+            chapterButtons.forEach(button => {
+                const chapterId = button.getAttribute('data-chapter');
+                
+                // Prologue is always unlocked
+                if (chapterId === 'prologue') return;
+                
+                // Determine if chapter should be unlocked
+                let shouldUnlock = false;
+                
+                if (chapterId === 'rainbow') {
+                    shouldUnlock = gameState.quests.initiation.completed;
+                } else if (chapterId === 'plate') {
+                    shouldUnlock = isChapterCompleted('rainbow');
+                } else if (chapterId === 'hydration') {
+                    shouldUnlock = isChapterCompleted('plate');
+                } else if (chapterId === 'meal-planning') {
+                    shouldUnlock = isChapterCompleted('hydration');
+                } else if (chapterId === 'rewards') {
+                    shouldUnlock = isChapterCompleted('meal-planning');
+                } else if (chapterId === 'advanced') {
+                    // Advanced chapter requires at least one power from Archives
+                    shouldUnlock = isChapterCompleted('rewards') && gameState.activeRewards.length > 0;
+                } else if (chapterId === 'mastery') {
+                    // Mastery chapter requires completion of advanced challenges
+                    shouldUnlock = isChapterCompleted('advanced');
+                }
+                
+                if (shouldUnlock && button.classList.contains('locked')) {
+                    button.classList.remove('locked');
+                    showNotification(`New chapter unlocked: ${button.textContent.trim()}`, 'reward');
+                } else if (!shouldUnlock && !button.classList.contains('locked')) {
+                    button.classList.add('locked');
+                }
+            });
+        }
+
+        // Check if a chapter is completed - FIXED VERSION
+        function isChapterCompleted(chapterId) {
+            const chapterQuests = Object.values(gameState.quests).filter(quest => quest.chapter === chapterId);
+            if (chapterQuests.length === 0) return false;
+            
+            const completedQuests = chapterQuests.filter(quest => quest.completed);
+            
+            // Different completion requirements for different chapters
+            if (chapterId === 'prologue') {
+                // Prologue only requires initiation to be completed
+                return gameState.quests.initiation.completed;
+            } else if (chapterId === 'rainbow') {
+                // Rainbow requires 3 out of 4 quests completed
+                return completedQuests.length >= 3;
+            } else if (chapterId === 'plate') {
+                // Plate requires 2 out of 3 quests completed
+                return completedQuests.length >= 2;
+            } else if (chapterId === 'hydration') {
+                // Hydration requires 2 out of 3 quests completed
+                return completedQuests.length >= 2;
+            } else if (chapterId === 'meal-planning') {
+                // Meal planning requires both quests completed
+                return completedQuests.length === 2;
+            } else if (chapterId === 'rewards') {
+                // Rewards chapter is considered completed when accessed
+                return gameState.chaptersUnlocked >= 6;
+            } else if (chapterId === 'advanced') {
+                // Advanced requires at least 2 quests completed
+                return completedQuests.length >= 2;
+            } else if (chapterId === 'mastery') {
+                // Mastery requires both quests completed
+                return completedQuests.length === 2;
+            }
+            
+            return false;
+        }
+
+        // Update quest availability based on purchased rewards
+        function updateQuestAvailability() {
+            const purchasedRewardNames = gameState.activeRewards.map(reward => reward.name);
+            const purchasedRewardCount = purchasedRewardNames.length;
+            
+            // Update all quest buttons
+            document.querySelectorAll('.quest-action').forEach(button => {
+                const questId = button.getAttribute('data-quest');
+                const quest = gameState.quests[questId];
+                
+                if (quest && quest.requires) {
+                    if (quest.requires === '3+ Powers' && purchasedRewardCount >= 3) {
+                        button.disabled = false;
+                        button.textContent = 'Begin Trial';
+                    } else if (quest.requires === '4+ Powers' && purchasedRewardCount >= 4) {
+                        button.disabled = false;
+                        button.textContent = 'Begin Trial';
+                    } else if (purchasedRewardNames.includes(quest.requires)) {
+                        button.disabled = false;
+                        button.textContent = 'Begin Challenge';
+                    } else {
+                        button.disabled = true;
+                        button.textContent = `Requires: ${quest.requires}`;
+                    }
+                }
+            });
+        }
+
+        // Load food options based on category
+        function loadFoodOptions(category) {
+            foodOptionsContainer.innerHTML = '';
+            const foods = foodDatabase[category];
+            
+            foods.forEach(food => {
+                const foodElement = document.createElement('div');
+                foodElement.className = 'food-option';
+                foodElement.draggable = true;
+                foodElement.innerHTML = `
+                    <img src="${food.image}" alt="${food.name}" class="food-image">
+                    <div class="food-emoji">${food.emoji}</div>
+                    <div class="food-name">${food.name}</div>
+                    <div class="food-calories">${food.calories} cal</div>
+                `;
+                
+                foodElement.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', JSON.stringify(food));
+                });
+                
+                foodOptionsContainer.appendChild(foodElement);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Chapter navigation
+            chapterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (button.classList.contains('locked')) {
+                        showNotification('Complete the previous chapter to unlock this content.', 'warning');
+                        return;
+                    }
+                    
+                    const chapterId = button.getAttribute('data-chapter');
+                    
+                    // Update active chapter button
+                    chapterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Show corresponding section
+                    storySections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === chapterId) {
+                            section.classList.add('active');
+                            gameState.currentChapter = chapterId;
+                        }
+                    });
+                });
+            });
+            
+            // Quest actions
+            questActions.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.disabled) return;
+                    
+                    const questId = this.getAttribute('data-quest');
+                    
+                    if (questId && !this.classList.contains('completed')) {
+                        startQuest(questId, this);
+                    }
+                });
+            });
+            
+            // Reward purchases
+            document.querySelectorAll('.reward-item').forEach(item => {
+                if (!item.classList.contains('purchased')) {
+                    item.addEventListener('click', function() {
+                        const rewardTitle = this.querySelector('.reward-title').textContent;
+                        const rewardPrice = parseInt(this.querySelector('.reward-price').textContent);
+                        
+                        purchaseReward(rewardTitle, rewardPrice, this);
+                    });
+                }
+            });
+
+            // Category buttons for meal planning
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const category = button.getAttribute('data-category');
+                    
+                    // Update active category
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Load food options
+                    loadFoodOptions(category);
+                });
+            });
+            
+            // Meal slots (drop zones)
+            mealSlots.forEach(slot => {
+                slot.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                });
+                
+                slot.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    const foodData = JSON.parse(e.dataTransfer.getData('text/plain'));
+                    addMealToSlot(slot, foodData);
+                });
+            });
+            
+            // Save plan button
+            savePlanBtn.addEventListener('click', saveMealPlan);
+            
+            // Download plan button
+            downloadPlanBtn.addEventListener('click', downloadMealPlan);
+            
+            // Auto generate button
+            autoGenerateBtn.addEventListener('click', generateMealPlan);
+            
+            // Meal plan templates
+            document.querySelectorAll('.meal-plan-template').forEach(template => {
+                template.addEventListener('click', function() {
+                    const templateId = this.getAttribute('data-template');
+                    loadMealPlanTemplate(templateId);
+                });
+            });
+        }
+
+        // Add meal to a slot
+        function addMealToSlot(slot, food) {
+            const day = slot.getAttribute('data-day');
+            const mealType = slot.getAttribute('data-meal');
+            
+            // Update slot appearance
+            slot.classList.remove('empty');
+            slot.classList.add('filled');
+            slot.innerHTML = `
+                <div class="meal-time">
+                    <i class="fas fa-${mealType === 'breakfast' ? 'sun' : mealType === 'lunch' ? 'cloud-sun' : 'moon'}"></i>
+                    ${mealType.charAt(0).toUpperCase() + mealType.slice(1)}
+                </div>
+                <div class="meal-content">
+                    <div class="meal-emoji">${food.emoji}</div>
+                    <div class="meal-details">
+                        <div class="meal-name">${food.name}</div>
+                        <div class="meal-calories">${food.calories} calories</div>
+                    </div>
+                    <button class="remove-meal"><i class="fas fa-times"></i></button>
+                </div>
+            `;
+            
+            // Add remove functionality
+            const removeButton = slot.querySelector('.remove-meal');
+            removeButton.addEventListener('click', () => {
+                resetMealSlot(slot);
+            });
+            
+            showNotification(`Added ${food.name} to ${day}'s ${mealType}!`, 'success');
+        }
+
+        // Reset a meal slot to empty
+        function resetMealSlot(slot) {
+            slot.classList.remove('filled');
+            slot.classList.add('empty');
+            slot.innerHTML = `<i class="fas fa-plus"></i> Add ${slot.getAttribute('data-meal').charAt(0).toUpperCase() + slot.getAttribute('data-meal').slice(1)}`;
+        }
+
+        // Save the current meal plan
+        function saveMealPlan() {
+            const filledSlots = document.querySelectorAll('.meal-slot.filled');
+            
+            if (filledSlots.length === 0) {
+                showNotification('Please add some meals to your plan before saving!', 'warning');
+                return;
+            }
+            
+            // Create meal plan object
+            const mealPlan = {
+                id: Date.now(),
+                name: `Meal Plan ${gameState.mealPlans.length + 1}`,
+                date: new Date().toLocaleDateString(),
+                meals: []
+            };
+            
+            // Collect all filled slots
+            filledSlots.forEach(slot => {
+                const day = slot.getAttribute('data-day');
+                const mealType = slot.getAttribute('data-meal');
+                const mealName = slot.querySelector('.meal-name').textContent;
+                const mealCalories = parseInt(slot.querySelector('.meal-calories').textContent);
+                
+                mealPlan.meals.push({
+                    day: day,
+                    mealType: mealType,
+                    name: mealName,
+                    calories: mealCalories
+                });
+            });
+            
+            // Save to game state
+            gameState.mealPlans.push(mealPlan);
+            
+            // Award points
+            const pointsEarned = filledSlots.length * 10;
+            gameState.storyPoints += pointsEarned;
+            updateStats();
+            
+            showNotification(`Meal plan saved! You earned ${pointsEarned} Story Points.`, 'success');
+        }
+
+        // Download the current meal plan as JSON
+        function downloadMealPlan() {
+            const filledSlots = document.querySelectorAll('.meal-slot.filled');
+            
+            if (filledSlots.length === 0) {
+                showNotification('Please add some meals to your plan before downloading!', 'warning');
+                return;
+            }
+            
+            // Create meal plan object
+            const mealPlan = {
+                name: `OmniReader Meal Plan - ${new Date().toLocaleDateString()}`,
+                date: new Date().toISOString(),
+                totalCalories: 0,
+                meals: []
+            };
+            
+            // Collect all filled slots
+            filledSlots.forEach(slot => {
+                const day = slot.getAttribute('data-day');
+                const mealType = slot.getAttribute('data-meal');
+                const mealName = slot.querySelector('.meal-name').textContent;
+                const mealCalories = parseInt(slot.querySelector('.meal-calories').textContent);
+                
+                mealPlan.meals.push({
+                    day: day,
+                    mealType: mealType,
+                    name: mealName,
+                    calories: mealCalories
+                });
+                
+                mealPlan.totalCalories += mealCalories;
+            });
+            
+            // Create and download JSON file
+            const dataStr = JSON.stringify(mealPlan, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `omniReader-meal-plan-${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('Meal plan downloaded successfully!', 'success');
+        }
+
+        // Load a meal plan template
+        function loadMealPlanTemplate(templateId) {
+            const template = mealPlanTemplates[templateId];
+            
+            if (!template) {
+                showNotification('Template not found!', 'warning');
+                return;
+            }
+            
+            // Clear existing meals
+            document.querySelectorAll('.meal-slot.filled').forEach(slot => {
+                resetMealSlot(slot);
+            });
+            
+            // Load template meals
+            Object.keys(template.meals).forEach(day => {
+                Object.keys(template.meals[day]).forEach(mealType => {
+                    const meal = template.meals[day][mealType];
+                    const slot = document.querySelector(`.meal-slot[data-day="${day}"][data-meal="${mealType}"]`);
+                    
+                    if (slot) {
+                        addMealToSlot(slot, meal);
+                    }
+                });
+            });
+            
+            showNotification(`Loaded ${template.name}!`, 'success');
+        }
+
+        // Generate a meal plan automatically
+        function generateMealPlan() {
+            const days = ['monday', 'tuesday', 'wednesday'];
+            const mealTypes = ['breakfast', 'lunch', 'dinner'];
+            
+            // Clear existing meals
+            document.querySelectorAll('.meal-slot.filled').forEach(slot => {
+                resetMealSlot(slot);
+            });
+            
+            // Generate meals for each day and meal type
+            days.forEach(day => {
+                mealTypes.forEach(mealType => {
+                    const slot = document.querySelector(`.meal-slot[data-day="${day}"][data-meal="${mealType}"]`);
+                    const foods = foodDatabase[mealType];
+                    const randomFood = foods[Math.floor(Math.random() * foods.length)];
+                    
+                    addMealToSlot(slot, randomFood);
+                });
+            });
+            
+            showNotification('Meal plan generated automatically! Review and save if you like it.', 'info');
+        }
+
+        // Start a quest - FIXED VERSION
+        function startQuest(questId, button) {
+            const quest = gameState.quests[questId];
+            
+            if (quest && !quest.completed) {
+                // Calculate how much progress is needed to reach 100%
+                const progressNeeded = quest.requiredProgress - quest.progress;
+                
+                // If we're close to completion, just complete it
+                if (progressNeeded <= 25) {
+                    quest.progress = quest.requiredProgress;
+                } else {
+                    // Otherwise add a meaningful progress (30-50%)
+                    const progressIncrease = Math.floor(Math.random() * 21) + 30; // 30-50%
+                    quest.progress = Math.min(quest.progress + progressIncrease, quest.requiredProgress);
+                }
+                
+                // Update progress bar
+                const progressBar = button.parentElement.querySelector('.quest-progress-bar');
+                const progressPercent = Math.min((quest.progress / quest.requiredProgress) * 100, 100);
+                progressBar.style.width = `${progressPercent}%`;
+                
+                // Check if quest is completed
+                if (quest.progress >= quest.requiredProgress) {
+                    quest.progress = quest.requiredProgress;
+                    quest.completed = true;
+                    button.textContent = 'Completed';
+                    button.classList.add('completed');
+                    button.disabled = true;
+                    
+                    // Award points based on quest type
+                    let pointsEarned;
+                    switch(questId) {
+                        case 'initiation':
+                            pointsEarned = 250;
+                            break;
+                        case 'red-power':
+                        case 'orange-energy':
+                            pointsEarned = 80 + Math.floor(Math.random() * 20);
+                            break;
+                        case 'green-vitality':
+                        case 'purple-wisdom':
+                            pointsEarned = 100 + Math.floor(Math.random() * 30);
+                            break;
+                        case 'golden-ratio':
+                            pointsEarned = 120 + Math.floor(Math.random() * 30);
+                            break;
+                        case 'layering':
+                            pointsEarned = 100 + Math.floor(Math.random() * 20);
+                            break;
+                        case 'macronutrient':
+                            pointsEarned = 150 + Math.floor(Math.random() * 30);
+                            break;
+                        case 'daily-flow':
+                            pointsEarned = 90 + Math.floor(Math.random() * 20);
+                            break;
+                        case 'infusion':
+                            pointsEarned = 80 + Math.floor(Math.random() * 20);
+                            break;
+                        case 'cognitive':
+                            pointsEarned = 110 + Math.floor(Math.random() * 30);
+                            break;
+                        case 'weekly-blueprint':
+                            pointsEarned = 200 + Math.floor(Math.random() * 50);
+                            break;
+                        case 'efficient-shopping':
+                            pointsEarned = 150 + Math.floor(Math.random() * 30);
+                            break;
+                        case 'metabolic-ignition':
+                        case 'energy-surge':
+                        case 'cellular-optimization':
+                        case 'neural-hydration':
+                            pointsEarned = 300 + Math.floor(Math.random() * 50);
+                            break;
+                        case 'harmonic-nutrition':
+                        case 'eternal-vitality':
+                            pointsEarned = 500 + Math.floor(Math.random() * 100);
+                            break;
+                        default:
+                            pointsEarned = 100;
+                    }
+                    
+                    gameState.storyPoints += pointsEarned;
+                    gameState.achievements += 1;
+                    
+                    // Update chapter progress
+                    const chapterQuests = Object.values(gameState.quests).filter(q => q.chapter === quest.chapter);
+                    const completedChapterQuests = chapterQuests.filter(q => q.completed).length;
+                    gameState.chapterProgress[quest.chapter] = Math.round((completedChapterQuests / chapterQuests.length) * 100);
+                    
+                    updateStats();
+                    
+                    // Show completion notification
+                    showNotification(`Quest Mastered! You earned ${pointsEarned} Story Points and advanced your understanding significantly.`, 'success');
+                    
+                    // Check for level up
+                    if (gameState.storyPoints >= gameState.readerLevel * 500) {
+                        gameState.readerLevel++;
+                        updateStats();
+                        showNotification(`Reader Level Up! You are now Level ${gameState.readerLevel}. New abilities await.`, 'reward');
+                    }
+                    
+                    // Check if chapter is completed and unlock next one
+                    if (isChapterCompleted(quest.chapter)) {
+                        const nextChapterIndex = getNextChapterIndex(quest.chapter);
+                        gameState.chaptersUnlocked = Math.max(gameState.chaptersUnlocked, nextChapterIndex + 1);
+                        updateStats();
+                        updateChapterButtons();
+                        showNotification(`Chapter ${getChapterName(quest.chapter)} completed! New chapter unlocked.`, 'reward');
+                    }
+                    
+                    // Update chapter progression display
+                    updateChapterProgression(quest.chapter);
+                    
+                } else {
+                    // Show progress notification
+                    showNotification(`Quest progress: ${Math.round(quest.progress)}% complete. Your understanding deepens.`, 'info');
+                    
+                    // Update chapter progression display
+                    updateChapterProgression(quest.chapter);
+                }
+            }
+        }
+
+        // New function to update chapter progression display
+        function updateChapterProgression(chapterId) {
+            const chapterProgressBar = document.querySelector(`#${chapterId} .progression-fill`);
+            if (chapterProgressBar) {
+                chapterProgressBar.style.width = `${gameState.chapterProgress[chapterId]}%`;
+                
+                const progressText = document.querySelector(`#${chapterId} .progression-text span:last-child`);
+                if (progressText) {
+                    progressText.textContent = `${gameState.chapterProgress[chapterId]}% Complete`;
+                }
+            }
+            
+            // Update overall progression
+            const totalProgress = Object.values(gameState.chapterProgress).reduce((sum, progress) => sum + progress, 0);
+            const overallProgress = Math.round(totalProgress / Object.keys(gameState.chapterProgress).length);
+            
+            const overallProgressBar = document.querySelector('.story-progression .progression-fill');
+            const overallProgressText = document.querySelector('.story-progression .progression-text span:last-child');
+            
+            if (overallProgressBar) {
+                overallProgressBar.style.width = `${overallProgress}%`;
+            }
+            if (overallProgressText) {
+                overallProgressText.textContent = `${overallProgress}% Complete`;
+            }
+        }
+
+        // Get next chapter index
+        function getNextChapterIndex(chapterId) {
+            const chapters = ['prologue', 'rainbow', 'plate', 'hydration', 'meal-planning', 'rewards', 'advanced', 'mastery'];
+            const currentIndex = chapters.indexOf(chapterId);
+            return currentIndex + 1;
+        }
+
+        // Get chapter name from ID
+        function getChapterName(chapterId) {
+            const chapterNames = {
+                'prologue': 'Prologue',
+                'rainbow': 'Chapter 1',
+                'plate': 'Chapter 2',
+                'hydration': 'Chapter 3',
+                'meal-planning': 'Chapter 4',
+                'rewards': 'Archives of Power',
+                'advanced': 'Advanced Challenges',
+                'mastery': 'Mastery Trials'
+            };
+            return chapterNames[chapterId] || chapterId;
+        }
+
+        // Purchase a reward
+        function purchaseReward(rewardTitle, price, element) {
+            if (gameState.storyPoints >= price) {
+                gameState.storyPoints -= price;
+                updateStats();
+                
+                // Mark as purchased
+                element.classList.add('purchased');
+                element.querySelector('.reward-price').textContent = 'Purchased';
+                
+                // Find and update in game state
+                const reward = gameState.rewards.find(r => r.name === rewardTitle);
+                if (reward) {
+                    reward.purchased = true;
+                    gameState.activeRewards.push(reward);
+                }
+                
+                // Update purchased items display
+                updatePurchasedItems();
+                
+                // Update quest availability
+                updateQuestAvailability();
+                
+                // Create power challenge
+                createPowerChallenge(rewardTitle);
+                
+                // Update power progression
+                updatePowerProgression();
+                
+                // Show purchase notification
+                showNotification(`You acquired "${rewardTitle}"! Its power flows through you, enhancing your journey.`, 'reward');
+                
+                // Show reward effect
+                showRewardEffect(rewardTitle);
+                
+                // Special effects for certain rewards
+                if (rewardTitle === "Reader's Insight") {
+                    showNotification('With Reader\'s Insight activated, you can now perceive the hidden nutritional truths in all foods. Your vision expands.', 'info');
+                } else if (rewardTitle === "Dragon's Metabolism") {
+                    showNotification('Your metabolism surges with draconic energy! Feel the power coursing through you, transforming your vitality.', 'reward');
+                } else if (rewardTitle === "Infinite Hydration") {
+                    showNotification('The essence of water flows through you eternally. Your cells rejoice at this newfound efficiency.', 'success');
+                }
+                
+                // Unlock advanced chapters if conditions are met
+                if (gameState.activeRewards.length >= 1 && gameState.chaptersUnlocked < 7) {
+                    gameState.chaptersUnlocked = 7;
+                    updateStats();
+                    updateChapterButtons();
+                    showNotification('Advanced Challenges unlocked! Your growing power has revealed new dimensions to your journey.', 'story');
+                }
+            } else {
+                showNotification(`You need ${price - gameState.storyPoints} more Story Points to unlock this power. Continue your quest.`, 'warning');
+            }
+        }
+
+        // Update power progression
+        function updatePowerProgression() {
+            const totalRewards = gameState.rewards.length;
+            const purchasedRewards = gameState.activeRewards.length;
+            const powerProgress = Math.round((purchasedRewards / totalRewards) * 100);
+            
+            powerProgressionBar.style.width = `${powerProgress}%`;
+            powerProgressionText.textContent = `${powerProgress}% Unlocked`;
+        }
+
+        // Create a power challenge
+        function createPowerChallenge(powerName) {
+            const challenge = gameState.powerChallenges[powerName];
+            
+            if (challenge && !challenge.completed) {
+                const challengeElement = document.createElement('div');
+                challengeElement.className = 'power-challenge';
+                challengeElement.id = `challenge-${powerName.replace(/\s+/g, '-').toLowerCase()}`;
+                challengeElement.innerHTML = `
+                    <div class="power-challenge-title">
+                        <i class="fas fa-tasks"></i> ${powerName} Mastery Challenge
+                    </div>
+                    <div class="power-challenge-desc">
+                        ${powerChallengeDescriptions[powerName]}
+                    </div>
+                    <div class="power-challenge-progress">
+                        <div class="power-challenge-progress-bar" style="width: ${challenge.progress}%"></div>
+                    </div>
+                    <div class="power-challenge-reward">Reward: +${challenge.reward} Story Points</div>
+                    <button class="quest-action power-challenge-btn" data-power="${powerName}">Advance Challenge</button>
+                `;
+                
+                powerChallengesContainer.appendChild(challengeElement);
+                
+                // Add event listener to the challenge button
+                const challengeBtn = challengeElement.querySelector('.power-challenge-btn');
+                challengeBtn.addEventListener('click', function() {
+                    advancePowerChallenge(powerName, this);
+                });
+                
+                showNotification(`A new challenge has appeared! Master your ${powerName} to unlock its full potential.`, 'story');
+            }
+        }
+
+        // Advance a power challenge
+        function advancePowerChallenge(powerName, button) {
+            const challenge = gameState.powerChallenges[powerName];
+            
+            if (challenge && !challenge.completed) {
+                // Add progress (30-50%)
+                const progressIncrease = Math.floor(Math.random() * 21) + 30;
+                challenge.progress = Math.min(challenge.progress + progressIncrease, challenge.requiredProgress);
+                
+                // Update progress bar
+                const progressBar = button.parentElement.querySelector('.power-challenge-progress-bar');
+                progressBar.style.width = `${challenge.progress}%`;
+                
+                // Check if challenge is completed
+                if (challenge.progress >= challenge.requiredProgress) {
+                    challenge.progress = challenge.requiredProgress;
+                    challenge.completed = true;
+                    button.textContent = 'Completed';
+                    button.classList.add('completed');
+                    button.disabled = true;
+                    
+                    // Award points
+                    gameState.storyPoints += challenge.reward;
+                    gameState.achievements += 1;
+                    updateStats();
+                    
+                    showNotification(`Power Challenge Mastered! You earned ${challenge.reward} Story Points and fully unlocked ${powerName}.`, 'success');
+                } else {
+                    showNotification(`${powerName} Challenge progress: ${Math.round(challenge.progress)}% complete.`, 'info');
+                }
+            }
+        }
+
+        // Update power challenges display
+        function updatePowerChallenges() {
+            // Clear existing challenges
+            powerChallengesContainer.innerHTML = '';
+            
+            // Create challenges for purchased powers
+            gameState.activeRewards.forEach(reward => {
+                createPowerChallenge(reward.name);
+            });
+        }
+
+        // Update purchased items display
+        function updatePurchasedItems() {
+            purchasedItemsGrid.innerHTML = '';
+            
+            const purchasedRewards = gameState.rewards.filter(reward => reward.purchased);
+            
+            if (purchasedRewards.length === 0) {
+                purchasedItemsGrid.innerHTML = '<p style="text-align: center; color: #666; grid-column: 1 / -1;">No rewards purchased yet. Visit the Archives of Power to unlock abilities.</p>';
+                return;
+            }
+            
+            purchasedRewards.forEach(reward => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'purchased-item';
+                itemElement.innerHTML = `
+                    <div class="purchased-item-icon">
+                        <i class="fas ${reward.icon}"></i>
+                    </div>
+                    <div class="purchased-item-title">${reward.name}</div>
+                    <div class="purchased-item-effect">${reward.effect}</div>
+                    <div class="purchased-item-active">ACTIVE</div>
+                `;
+                
+                purchasedItemsGrid.appendChild(itemElement);
+            });
+        }
+
+        // Show reward effect animation
+        function showRewardEffect(rewardName) {
+            rewardEffectText.textContent = `${rewardName} Activated!`;
+            rewardEffects.style.opacity = '1';
+            
+            setTimeout(() => {
+                rewardEffects.style.opacity = '0';
+            }, 3000);
+        }
+
+        // Enhanced Notification system
+        function showNotification(message, type = 'info') {
+            const notificationContainer = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'warning') icon = 'fa-exclamation-triangle';
+            if (type === 'reward') icon = 'fa-gem';
+            if (type === 'story') icon = 'fa-scroll';
+            
+            notification.innerHTML = `
+                <div class="notification-icon">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                    <div>${message}</div>
+                </div>
+                <button class="notification-close"><i class="fas fa-times"></i></button>
+            `;
+            
+            notificationContainer.appendChild(notification);
+            
+            // Show notification with animation
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Close button functionality
+            notification.querySelector('.notification-close').addEventListener('click', function() {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            });
+            
+            // Auto-remove after 7 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 500);
+                }
+            }, 7000);
+        }
+
+        // Initialize the game when the page loads
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>
